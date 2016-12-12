@@ -25,13 +25,16 @@ window = InWindow "Droid That You Are Looking For" windowResolution windowPositi
 render :: GameState -> Picture
 render (Intro duration timePassed introPicture) = introPicture
 render (Menu (LivePicture newGamePicture _ _ _) (LivePicture quitGamePicture _ _ _)) = pictures [newGamePicture, quitGamePicture]
-render (Play) = color white $ circle 50
-
+render (Play duration timePassed ) = pictures [timer]
+    where
+        currentTime = ceiling (duration - timePassed)
+        timer = scale 0.2 0.2 $ color white $ text $ show currentTime
+        
 
 handleKeyEvents :: Event -> GameState -> GameState
 handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Menu newGamePicture quitGamePicture) = if LivePicture.isClicked newGamePicture mousePosition  
                                                                                                                 then
-                                                                                                                    Play
+                                                                                                                    GameState.getPlay
                                                                                                                 else
                                                                                                                     if LivePicture.isClicked quitGamePicture mousePosition
                                                                                                                         then
@@ -51,7 +54,9 @@ updateGameState seconds gameState@(Intro duration timePassed introPicture) = gam
                             GameState.getMenu
 
 updateGameState seconds gameState@(Menu _ _)  = gameState
-updateGameState seconds gameState@(Play) = gameState
+updateGameState seconds gameState@(Play duration timePassed) = gameState {timePassed = timePassed'}
+    where
+        timePassed' = if timePassed + seconds < duration then timePassed + seconds else timePassed
 
 
 main :: IO ()
