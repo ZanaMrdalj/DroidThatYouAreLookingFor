@@ -1,8 +1,8 @@
-module LivePicture (LivePicture(..), isClicked) where
+module LivePicture (LivePicture(..), Position, create, isClicked) where
 
 import Graphics.Gloss
 
-type Position = (Int, Int)
+type Position = (Float, Float)
 
 data LivePicture = LivePicture 
     { picture :: Picture
@@ -11,8 +11,16 @@ data LivePicture = LivePicture
     , position :: Position
     } deriving (Show)
 
+create :: Picture -> Int -> Int -> Position -> LivePicture
+create picture width height (x, y)  = LivePicture 
+                                                 { picture = translate x y $ picture
+                                                 , width = width
+                                                 , height = height
+                                                 , position = (x, y)
+                                                 }
+
 isClicked :: LivePicture -> (Float, Float) -> Bool
-isClicked (LivePicture _ width height (posX, posY)) (mouseX, mouseY) = (mouseX > fromIntegral posX - fromIntegral (width `div` 2)) && 
-                                                                        (mouseX < fromIntegral posX + fromIntegral (width `div` 2 )) && 
-                                                                        (mouseY < fromIntegral posY + fromIntegral (height `div` 2)) &&
-                                                                        (mouseY > fromIntegral posY - fromIntegral (height `div` 2))     
+isClicked (LivePicture _ width height (posX, posY)) (mouseX, mouseY) = (mouseX > posX - fromIntegral (width `div` 2)) && 
+                                                                        (mouseX < posX + fromIntegral (width `div` 2 )) && 
+                                                                        (mouseY < posY + fromIntegral (height `div` 2)) &&
+                                                                        (mouseY > posY - fromIntegral (height `div` 2))     
