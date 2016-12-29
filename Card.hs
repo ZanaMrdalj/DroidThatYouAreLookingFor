@@ -17,6 +17,7 @@ data Card = Card
     , isAnimating :: Bool
     , animationDuration :: Float
     , animationTimePassed :: Float
+    --, cardId :: Int
     } deriving (Show)  
 
 defaultAnimationDuration :: Float

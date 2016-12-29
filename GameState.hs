@@ -34,10 +34,24 @@ getPlay :: GameState
 getPlay = Play
             { duration = 120
             , timePassed = 0
-            , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (0, 0)
+            , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (-160, 0)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (-80, 0)   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (0, 0)
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (80, 0)
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (160, 0)
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (240, 0)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (-160, 130)   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (-80, 130)   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (0, 130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (80, 130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (160, 130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (240, 130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (-160, -130)   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (-80, -130)   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (0, -130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (80, -130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (160, -130)
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (240, -130)   
                       ]
             }            
-    
+
