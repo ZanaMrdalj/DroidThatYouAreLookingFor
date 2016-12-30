@@ -31,6 +31,7 @@ createCard frontPicture backPicture width height (x, y)  = Card
                                                             , isAnimating = False
                                                             , animationDuration = defaultAnimationDuration
                                                             , animationTimePassed = 0
+                                                            --, cardId = 0   
                                                             } 
 
 getPicture :: Card -> Picture

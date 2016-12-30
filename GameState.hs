@@ -30,6 +30,9 @@ getMenu = Menu
             , quitGame = LivePicture.create (GlossGame.png ".\\assets\\quitGame.png") 500 125 (0 , -50) 
             }
 
+--randomizeCards :: [Int]
+--randomizeCards = 
+
 getPlay :: GameState
 getPlay = Play
             { duration = 120
