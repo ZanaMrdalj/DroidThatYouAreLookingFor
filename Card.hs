@@ -17,7 +17,7 @@ data Card = Card
     , isAnimating :: Bool
     , animationDuration :: Float
     , animationTimePassed :: Float
-    --, cardId :: Int
+    , cardId :: Int
     } deriving (Show)  
 
 defaultAnimationDuration :: Float
@@ -31,11 +31,11 @@ createCard frontPicture backPicture width height (x, y)  = Card
                                                             , isAnimating = False
                                                             , animationDuration = defaultAnimationDuration
                                                             , animationTimePassed = 0
-                                                            --, cardId = 0   
+                                                            , cardId = 0   
                                                             } 
 
 getPicture :: Card -> Picture
-getPicture card@(Card front back isFlipped isAnimating animationDuration animationTimePassed ) = if not isFlipped 
+getPicture card@(Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) = if not isFlipped 
                                                                                                 then 
                                                                                                     if not isAnimating 
                                                                                                         then
@@ -52,7 +52,7 @@ scaleAroundOrigin :: Position -> Float -> Float -> Picture -> Picture
 scaleAroundOrigin (x, y) scaleFactorX scaleFactorY picture =  (translate x y . scale scaleFactorX scaleFactorY . translate  (-x) (-y)) $ picture 
 
 flipPicture :: Card -> Picture
-flipPicture (Card front back isFlipped isAnimating animationDuration animationTimePassed ) 
+flipPicture (Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) 
     | animationTimePassed < treshold = let scaleX = (treshold - animationTimePassed) / treshold in scaleAroundOrigin (position back) scaleX 1 (picture back)
     | animationTimePassed > treshold && animationTimePassed < animationDuration = let scaleX = (animationTimePassed - treshold) / treshold in scaleAroundOrigin (position front) scaleX 1 (picture front)
     | otherwise = picture front
@@ -60,7 +60,7 @@ flipPicture (Card front back isFlipped isAnimating animationDuration animationTi
         treshold = animationDuration / 2
 
 reverseFlipPicture :: Card -> Picture
-reverseFlipPicture (Card front back isFlipped isAnimating animationDuration animationTimePassed ) 
+reverseFlipPicture (Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) 
     | animationTimePassed < treshold = let scaleX = (treshold - animationTimePassed) / treshold in scaleAroundOrigin (position front) scaleX 1  (picture front)
     | animationTimePassed > treshold && animationTimePassed < animationDuration = let scaleX = (animationTimePassed - treshold) / treshold in scaleAroundOrigin (position back) scaleX 1  (picture back)
     | otherwise = picture back
@@ -69,7 +69,7 @@ reverseFlipPicture (Card front back isFlipped isAnimating animationDuration anim
 
 
 startFilpAnimation :: Card -> Card
-startFilpAnimation card@(Card front back isFlipped _ _ _) = card { isFlipped = isFlipped', isAnimating = True}
+startFilpAnimation card@(Card front back isFlipped _ _ _ _) = card { isFlipped = isFlipped', isAnimating = True}
     where
         isFlipped' = not isFlipped
 

@@ -17,7 +17,8 @@ render (Play duration timePassed cards ) = pictures pictureList
         currentTime = ceiling (duration - timePassed)
         timer = Timer.getTimer currentTime
         pictureList = timer : [ Card.getPicture card | card <- cards ]
-        
+render (GameOver duration timePassed exitPicture) = exitPicture
+
 
 handleKeyEvents :: Event -> GameState -> GameState
 handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Menu newGamePicture quitGamePicture) = if LivePicture.isClicked newGamePicture mousePosition  
@@ -30,18 +31,20 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
                                                                                                                                     else
                                                                                                                                         gameState
 
+
 handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play duration timePassed cards) = gameState { cards = cards' }
     where
         cards' = map checkCardClick cards
 
         checkCardClick :: Card -> Card
-        checkCardClick card@(Card front back isFlipped isAnimating _ _ ) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
+        checkCardClick card@(Card front back isFlipped isAnimating _ _ _) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
                                                                         then
                                                                             Card.startFilpAnimation card
                                                                         else
                                                                             card
-      
+      --f-ja koja proverava da li je to prva otvorena karta? ako jeste, idemo dalje ako nije proveravamo da li im je isti idf
     
+
 handleKeyEvents _ gameState = gameState
 
 updateGameState :: Float -> GameState -> GameState
@@ -58,10 +61,16 @@ updateGameState seconds gameState@(Menu _ _)  = gameState
 updateGameState seconds gameState@(Play duration timePassed cards) = gameState {timePassed = timePassed', cards = cards'}
     where
         timePassed' = if timePassed + seconds < duration then timePassed + seconds else timePassed
+        gameState' = if timePassed' < duration 
+                        then 
+                            gameState { timePassed = timePassed' }
+                        else 
+                            GameState.getGameOver
+
         cards' = map updateCards cards
 
         updateCards :: Card -> Card
-        updateCards card@(Card front back isFlipped isAnimating animationDuration animationTimePassed ) = if isAnimating
+        updateCards card@(Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) = if isAnimating
                                                                                                             then
                                                                                                                 if animationTimePassed > animationDuration
                                                                                                                     then
@@ -70,6 +79,15 @@ updateGameState seconds gameState@(Play duration timePassed cards) = gameState {
                                                                                                                         Card.updateFlipAnimation seconds card
                                                                                                             else
                                                                                                                 card
+
+updateGameState seconds gameState@(GameOver duration timePassed exitPicture) = gameState'
+    where
+        timePassed' = timePassed + seconds
+        gameState' = if timePassed' < duration
+                        then
+                            gameState { timePassed = timePassed' }
+                        else
+                            error "Quit game"
 
 main :: IO ()
 main = do 
