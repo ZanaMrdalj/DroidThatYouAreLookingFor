@@ -21,17 +21,17 @@ data Card = Card
     } deriving (Show)  
 
 defaultAnimationDuration :: Float
-defaultAnimationDuration = 1.0
+defaultAnimationDuration = 0.7
 
-createCard :: Picture -> Picture -> Int -> Int -> Position -> Card          
-createCard frontPicture backPicture width height (x, y)  = Card 
+createCard :: Picture -> Picture -> Int -> Int -> Position -> Int -> Card          
+createCard frontPicture backPicture width height (x, y) matchNumber = Card 
                                                             { front = LivePicture.create frontPicture width height (x ,y)
                                                             , back = LivePicture.create backPicture width height (x, y)
                                                             , isFlipped = False
                                                             , isAnimating = False
                                                             , animationDuration = defaultAnimationDuration
                                                             , animationTimePassed = 0
-                                                            , cardId = 0   
+                                                            , cardId = matchNumber   
                                                             } 
 
 getPicture :: Card -> Picture

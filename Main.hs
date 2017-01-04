@@ -41,9 +41,8 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
                                                                         then
                                                                             Card.startFilpAnimation card
                                                                         else
-                                                                            card
-      --f-ja koja proverava da li je to prva otvorena karta? ako jeste, idemo dalje ako nije proveravamo da li im je isti idf
-    
+                                                                            card                                                                 
+
 
 handleKeyEvents _ gameState = gameState
 
