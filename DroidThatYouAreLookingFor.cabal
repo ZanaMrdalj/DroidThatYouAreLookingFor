@@ -57,7 +57,7 @@ executable DroidThatYouAreLookingFor
   -- other-extensions:    
   
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.9 && <4.10, gloss==1.10.*, gloss-game==0.3.*
+  build-depends:       base >=4.9 && <4.10, gloss==1.10.*, gloss-game==0.3.*, random-shuffle==0.0.*
   
   -- Directories containing source files.
   -- hs-source-dirs:      

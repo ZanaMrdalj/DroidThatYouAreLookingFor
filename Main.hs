@@ -14,10 +14,11 @@ render (Intro duration timePassed introPicture) = introPicture
 render (Menu (LivePicture newGamePicture _ _ _) (LivePicture quitGamePicture _ _ _)) = pictures [newGamePicture, quitGamePicture]
 render (Play duration timePassed cards ) = pictures pictureList
     where
-        currentTime = ceiling (duration - timePassed)
+        currentTime = ceiling (duration - timePassed) 
         timer = Timer.getTimer currentTime
         pictureList = timer : [ Card.getPicture card | card <- cards ]
 render (GameOver duration timePassed exitPicture) = exitPicture
+render (YouWin duration timePassed winningPicture) = winningPicture
 
 
 handleKeyEvents :: Event -> GameState -> GameState
@@ -32,7 +33,7 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
                                                                                                                                         gameState
 
 
-handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play duration timePassed cards) = gameState { cards = cards' }
+handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play duration timePassed cards) = gameState { cards = cards' }
     where
         cards' = map checkCardClick cards
 
@@ -41,9 +42,9 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
                                                                         then
                                                                             Card.startFilpAnimation card
                                                                         else
-                                                                            card                                                                 
+                                                                            card
 
-
+                                                                                                                                   
 handleKeyEvents _ gameState = gameState
 
 updateGameState :: Float -> GameState -> GameState
@@ -57,14 +58,14 @@ updateGameState seconds gameState@(Intro duration timePassed introPicture) = gam
                             GameState.getMenu
 
 updateGameState seconds gameState@(Menu _ _)  = gameState
-updateGameState seconds gameState@(Play duration timePassed cards) = gameState {timePassed = timePassed', cards = cards'}
+updateGameState seconds gameState@(Play duration timePassed cards) = gameState'
     where
-        timePassed' = if timePassed + seconds < duration then timePassed + seconds else timePassed
+        timePassed' = timePassed + seconds
         gameState' = if timePassed' < duration 
                         then 
-                            gameState { timePassed = timePassed' }
+                            gameState { timePassed = timePassed', cards = cards' }
                         else 
-                            GameState.getGameOver
+                            GameState.getGameOver      
 
         cards' = map updateCards cards
 
@@ -77,7 +78,29 @@ updateGameState seconds gameState@(Play duration timePassed cards) = gameState {
                                                                                                                     else
                                                                                                                         Card.updateFlipAnimation seconds card
                                                                                                             else
+                                       
                                                                                                                 card
+        
+
+
+                                                                                                                
+   --    checkCardsMatch :: Card -> Card -> GameState
+  --     checkCardsMatch card1@(Card front back isFlipped _ _ _ cardId1) card2@(Card front back isFlipped _ _ _ cardId1)  
+   --    | cardId1 != cardId2 = --treba flipovati karte nazad
+   --    | cardId == 6 =   --treba preci u stanje youWin
+   --
+     --  |otherwise  =      --nista, ostaviti ih otvorene                                                                                                              
+                                                                                                                                                                                                                            
+
+updateGameState seconds gameState@(YouWin duration timePassed introPicture) = gameState'
+    where
+        timePassed' = timePassed + seconds
+        gameState' = if timePassed' < duration
+                        then
+                            gameState { timePassed = timePassed' }
+                        else
+                            error "Thank you for playing"
+
 
 updateGameState seconds gameState@(GameOver duration timePassed exitPicture) = gameState'
     where

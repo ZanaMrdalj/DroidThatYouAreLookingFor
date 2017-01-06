@@ -2,13 +2,15 @@ module GameState (
     GameState(..)
     , getMenu
     , getPlay
-    , getGameOver) 
+    , getGameOver
+    , getYouWin ) 
     where
 
 import Graphics.Gloss
 import LivePicture
 import Card
 import qualified Graphics.Gloss.Game as GlossGame
+import System.Random.Shuffle
 
 data GameState = Intro
     { duration :: Float  -- duration of Intro in seconds
@@ -27,6 +29,11 @@ data GameState = Intro
     ,   timePassed :: Float
     ,   endGame :: Picture  
     }
+    | YouWin
+    {   duration :: Float
+    ,   timePassed :: Float  
+    ,   congrats :: Picture
+    }    
         deriving Show
 
 
@@ -36,13 +43,19 @@ getMenu = Menu
             , quitGame = LivePicture.create (GlossGame.png ".\\assets\\quitGame.png") 500 125 (0 , -50) 
             }
 
-coordinates :: [Position]
-coordinates = [ (-160, 0), (-80, 0), (0,0), (80, 0)
+startCoordinates :: [Position]
+startCoordinates = [ (-160, 0), (-80, 0), (0,0), (80, 0)
               , (160, 0), (240, 0), (-160, 130), (-80, 130)
               , (0, 130), (80, 130), (160, 130), (240, 130)
               , (-160, -130), (-80, -130) , (0, -130), (80, -130)
               , (160, -130), (240, -130) 
               ]
+
+-- funkcija koja treba da uradi random startCoordinates samo sto ne znam kako da koristim tu f-ju
+--randomizeCoordinates :: [Position] -> [Position]
+--randomizeCoordinates startCoordinates = shuffle startCoordinates [3,4,14,1,6,16,12,2,11,5,7,9,8,10,13,15,17] 
+--coordinates = randomizeCoordinates startCoordinates
+coordinates = startCoordinates
 
 getPlay :: GameState
 getPlay = Play
@@ -64,12 +77,10 @@ getPlay = Play
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\r2d2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 13) 6
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 14) 7
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 15) 7
-                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
-                      , Card.createCard (GlossGame.png ".\\assets\\cards\\droid1.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\test.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\3cpo3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
                       ]
             }            
-
-
 
 getGameOver :: GameState
 getGameOver = GameOver
@@ -78,4 +89,10 @@ getGameOver = GameOver
                     , endGame = GlossGame.png ".\\assets\\gameover.png"
                     }
 
+getYouWin :: GameState
+getYouWin = YouWin
+            { duration = 2
+            , timePassed = 0
+            , congrats = GlossGame.png ".\\assets\\youwin.png"
+            }
                    
