@@ -52,14 +52,16 @@ startCoordinates = [ (-160, 0), (-80, 0), (0,0), (80, 0)
               ]
 
 -- funkcija koja treba da uradi random startCoordinates samo sto ne znam kako da koristim tu f-ju
---randomizeCoordinates :: [Position] -> [Position]
---randomizeCoordinates startCoordinates = shuffle startCoordinates [3,4,14,1,6,16,12,2,11,5,7,9,8,10,13,15,17] 
---coordinates = randomizeCoordinates startCoordinates
-coordinates = startCoordinates
+randomizeCoordinates :: [Position] -> [Position]
+randomizeCoordinates startCoordinates = shuffle startCoordinates [13,4,14,1,6,2,5,8,7,3,4,1,2,3,3,17,9,10] 
+
+coordinates = randomizeCoordinates startCoordinates
+
+--coordinates = startCoordinates
 
 getPlay :: GameState
 getPlay = Play
-            { duration = 5
+            { duration = 15
             , timePassed = 0
             , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 0) 0
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 1) 0
@@ -75,23 +77,23 @@ getPlay = Play
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\battledroid2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 11) 5
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\r2d2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 12) 6
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\r2d2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 13) 6
-                      , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 14) 7
-                      , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 15) 7
-                      , Card.createCard (GlossGame.png ".\\assets\\cards\\test.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
-                      , Card.createCard (GlossGame.png ".\\assets\\cards\\3cpo3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
+                    --  , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 14) 7
+                     -- , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 15) 7
+                    --  , Card.createCard (GlossGame.png ".\\assets\\cards\\test.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
+                   --   , Card.createCard (GlossGame.png ".\\assets\\cards\\3cpo3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
                       ]
             }            
 
 getGameOver :: GameState
 getGameOver = GameOver
-                    { duration = 2
+                    { duration = 3
                     , timePassed = 0
                     , endGame = GlossGame.png ".\\assets\\gameover.png"
                     }
 
 getYouWin :: GameState
 getYouWin = YouWin
-            { duration = 2
+            { duration = 3
             , timePassed = 0
             , congrats = GlossGame.png ".\\assets\\youwin.png"
             }

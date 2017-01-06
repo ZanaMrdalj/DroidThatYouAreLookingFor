@@ -66,7 +66,7 @@ updateGameState seconds gameState@(Play duration timePassed cards) = gameState'
                             gameState { timePassed = timePassed', cards = cards' }
                         else 
                             GameState.getGameOver      
-
+                            
         cards' = map updateCards cards
 
         updateCards :: Card -> Card
