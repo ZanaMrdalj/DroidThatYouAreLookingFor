@@ -42,15 +42,22 @@ handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSt
                       
         matchingCards' = if clickNumber == 0 then ( clickedCard ,  Nothing)
                                              else ( clickedCard , x) 
-                                             where clickedCard = -- i have no idea how to do this?
+                                             where clickedCard = getClickedCard cards
 
 
         checkCardClick :: Card -> Card
         checkCardClick card@(Card front back isFlipped isAnimating _ _ _) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
                                                                         then
                                                                             Card.startFilpAnimation card
-                                                                        else
+                                                                        else                               
                                                                             card
+        getClickedCard :: [Card] -> Maybe Card
+        getClickedCard [] = Nothing
+        getClickedCard (card@(Card front back isFlipped isAnimating _ _ _) : cards) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
+                                                                        then
+                                                                            Just card
+                                                                        else
+                                                                            getClickedCard cards                                                                       
 
                                                                                                                              
 handleKeyEvents _ gameState = gameState
