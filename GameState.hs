@@ -20,7 +20,8 @@ data GameState = Intro
     { newGame :: LivePicture 
     , quitGame :: LivePicture } 
     | Play 
-    { duration :: Float
+    { clickNumber :: Int
+    , duration :: Float
     , timePassed :: Float
     , cards :: [Card]    
     }
@@ -61,7 +62,8 @@ coordinates = randomizeCoordinates startCoordinates
 
 getPlay :: GameState
 getPlay = Play
-            { duration = 15
+            { clickNumber = 0
+            , duration = 15
             , timePassed = 0
             , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 0) 0
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 1) 0
