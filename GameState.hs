@@ -19,8 +19,9 @@ data GameState = Intro
     | Menu 
     { newGame :: LivePicture 
     , quitGame :: LivePicture } 
-    | Play 
-    { clickNumber :: Int
+    | Play
+    { forbidClick :: Bool 
+    ,clickNumber :: Int
     , duration :: Float
     , timePassed :: Float
     , cards :: [Card] 
@@ -54,19 +55,20 @@ startCoordinates = [ (-160, 0), (-80, 0), (0,0), (80, 0)
               ]
 
 -- funkcija koja treba da uradi random startCoordinates samo sto ne znam kako da koristim tu f-ju
-randomizeCoordinates :: [Position] -> [Position]
-randomizeCoordinates startCoordinates = shuffle startCoordinates [13,4,14,1,6,2,5,8,7,3,4,1,2,3,3,17,9,10] 
+--randomizeCoordinates :: [Position] -> [Position]
+--randomizeCoordinates startCoordinates = shuffle startCoordinates [13,4,14,1,6,2,5,8,7,3,4,1,2,3,3,17,9,10] 
 
-coordinates = randomizeCoordinates startCoordinates
+--coordinates = randomizeCoordinates startCoordinates
 
---coordinates = startCoordinates
+coordinates = startCoordinates
 
 getPlay :: GameState
 getPlay = Play
-            { clickNumber = 0
-            , duration = 15
+            { forbidClick = False
+            , clickNumber = 0
+            , duration = 200
             , timePassed = 0
-            , matchingCards = (Nothing,Nothing)
+            , matchingCards = (Nothing, Nothing)
             , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 0) 0
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 1) 0
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\ivy3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 2) 1
@@ -81,10 +83,10 @@ getPlay = Play
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\battledroid2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 11) 5
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\r2d2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 12) 6
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\r2d2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 13) 6
-                    --  , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 14) 7
-                     -- , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 15) 7
-                    --  , Card.createCard (GlossGame.png ".\\assets\\cards\\test.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
-                   --   , Card.createCard (GlossGame.png ".\\assets\\cards\\3cpo3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 14) 7
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\reaper2.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 15) 7
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\test.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
+                      , Card.createCard (GlossGame.png ".\\assets\\cards\\3cpo3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
                       ]
             }            
 

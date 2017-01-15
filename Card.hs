@@ -2,7 +2,7 @@ module Card (
     Card(..)
     , createCard
     , getPicture
-    , startFilpAnimation
+    , startFlipAnimation
     , updateFlipAnimation
     , stopFlipAnimation
     ) where
@@ -21,7 +21,7 @@ data Card = Card
     } deriving (Show)  
 
 defaultAnimationDuration :: Float
-defaultAnimationDuration = 0.7
+defaultAnimationDuration = 0.5
 
 createCard :: Picture -> Picture -> Int -> Int -> Position -> Int -> Card          
 createCard frontPicture backPicture width height (x, y) matchNumber = Card 
@@ -68,8 +68,8 @@ reverseFlipPicture (Card front back isFlipped isAnimating animationDuration anim
                                                                                         
 
 
-startFilpAnimation :: Card -> Card
-startFilpAnimation card@(Card front back isFlipped _ _ _ _) = card { isFlipped = isFlipped', isAnimating = True}
+startFlipAnimation :: Card -> Card
+startFlipAnimation card@(Card front back isFlipped _ _ _ _) = card { isFlipped = isFlipped', isAnimating = True}
     where
         isFlipped' = not isFlipped
 
