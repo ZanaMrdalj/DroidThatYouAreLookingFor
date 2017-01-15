@@ -12,7 +12,7 @@ import Card
 render :: GameState -> Picture
 render (Intro duration timePassed introPicture) = introPicture
 render (Menu (LivePicture newGamePicture _ _ _) (LivePicture quitGamePicture _ _ _)) = pictures [newGamePicture, quitGamePicture]
-render (Play _ duration timePassed cards ) = pictures pictureList
+render (Play _ duration timePassed cards matchingCards) = pictures pictureList
     where
         currentTime = ceiling (duration - timePassed) 
         timer = Timer.getTimer currentTime
@@ -33,16 +33,17 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
                                                                                                                                         gameState
 
 
-handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play clickNumber duration timePassed cards) = gameState { clickNumber = clickNumber', cards = cards' }
+handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play clickNumber duration timePassed cards matchingCards) = gameState { clickNumber = clickNumber', cards = cards', matchingCards = matchingCards' }
     where
         cards' = map checkCardClick cards
 
         clickNumber' = if clickNumber == 2 then  0 
                                            else clickNumber + 1
+                      
+        matchingCards' = if clickNumber == 0 then ( clickedCard ,  Nothing)
+                                             else ( clickedCard , x) 
+                                             where clickedCard = -- i have no idea how to do this?
 
-        -- toPolje' = 
-        --            fja :: [card] -> card
-        --            fja cards                       
 
         checkCardClick :: Card -> Card
         checkCardClick card@(Card front back isFlipped isAnimating _ _ _) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
@@ -65,7 +66,7 @@ updateGameState seconds gameState@(Intro duration timePassed introPicture) = gam
                             GameState.getMenu
 
 updateGameState seconds gameState@(Menu _ _)  = gameState
-updateGameState seconds gameState@(Play clickNumber duration timePassed cards) = gameState'
+updateGameState seconds gameState@(Play clickNumber duration timePassed cards matchingCards) = gameState'
     where
         timePassed' = timePassed + seconds
         gameState' = if timePassed' < duration 
@@ -74,6 +75,9 @@ updateGameState seconds gameState@(Play clickNumber duration timePassed cards) =
                         else 
                             GameState.getGameOver      
                             
+
+                            
+
         cards' = map updateCards cards
 
         updateCards :: Card -> Card
@@ -87,13 +91,7 @@ updateGameState seconds gameState@(Play clickNumber duration timePassed cards) =
                                                                                                             else
                                        
                                                                                                                 card
-                                                                                                                
-   --    checkCardsMatch :: Card -> Card -> GameState
-   --    checkCardsMatch card1@(Card front back isFlipped _ _ _ cardId1) card2@(Card front back isFlipped _ _ _ cardId1)  
-   --    | cardId1 != cardId2 = --treba flipovati karte nazad
-   --    | cardId == 6 =   --treba preci u stanje youWin
-   --
-   --    |otherwise  =      --nista, ostaviti ih otvorene                                                                                                              
+                                                                                                                                                                                                                        
                                                                                                                                                                                                                             
 
 updateGameState seconds gameState@(YouWin duration timePassed introPicture) = gameState'

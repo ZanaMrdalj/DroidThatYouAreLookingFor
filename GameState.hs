@@ -23,7 +23,8 @@ data GameState = Intro
     { clickNumber :: Int
     , duration :: Float
     , timePassed :: Float
-    , cards :: [Card]    
+    , cards :: [Card] 
+    , matchingCards :: (Maybe Card, Maybe Card)   
     }
     | GameOver 
     {   duration :: Float
@@ -65,6 +66,7 @@ getPlay = Play
             { clickNumber = 0
             , duration = 15
             , timePassed = 0
+            , matchingCards = (Nothing,Nothing)
             , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 0) 0
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 1) 0
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\ivy3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 2) 1
