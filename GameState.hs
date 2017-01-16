@@ -66,7 +66,7 @@ getPlay :: GameState
 getPlay = Play
             { forbidClick = False
             , clickNumber = 0
-            , duration = 200
+            , duration = 100
             , timePassed = 0
             , matchingCards = (Nothing, Nothing)
             , cards =  [ Card.createCard (GlossGame.png ".\\assets\\cards\\bb8.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 0) 0

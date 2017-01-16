@@ -12,6 +12,7 @@ getTimer currentTime = translate x y $ scale 0.2 0.2 $ color white $ text $ spli
 
 splitTimer :: Int -> String
 splitTimer currentTime
+    | minutes >= 3 = "3 : " ++ show seconds
     | minutes >= 2 = "2 : " ++ show seconds
     | minutes >= 1 = "1 : " ++ show seconds
     | otherwise  = "0 : " ++ show seconds
