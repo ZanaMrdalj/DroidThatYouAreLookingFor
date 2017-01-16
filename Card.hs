@@ -21,7 +21,7 @@ data Card = Card
     } deriving (Show)  
 
 defaultAnimationDuration :: Float
-defaultAnimationDuration = 0.5
+defaultAnimationDuration = 0.8
 
 createCard :: Picture -> Picture -> Int -> Int -> Position -> Int -> Card          
 createCard frontPicture backPicture width height (x, y) matchNumber = Card 
