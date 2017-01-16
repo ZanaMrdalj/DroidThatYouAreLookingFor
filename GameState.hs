@@ -10,17 +10,20 @@ import Graphics.Gloss
 import LivePicture
 import Card
 import qualified Graphics.Gloss.Game as GlossGame
+import System.Random
 import System.Random.Shuffle
 
 data GameState = Intro
-    { duration :: Float  -- duration of Intro in seconds
+    { currentTime :: Int -- current system time when the game was started
+    , duration :: Float  -- duration of Intro in seconds
     , timePassed :: Float
     , introPicture :: Picture } 
     | Menu 
-    { newGame :: LivePicture 
+    { currentTime :: Int -- current system time when the game was started
+    , newGame :: LivePicture 
     , quitGame :: LivePicture } 
     | Play
-    { forbidClick :: Bool 
+    { currentTime :: Int -- current system time when the game was started 
     ,clickNumber :: Int
     , duration :: Float
     , timePassed :: Float
@@ -40,31 +43,16 @@ data GameState = Intro
         deriving Show
 
 
-getMenu :: GameState
-getMenu = Menu 
-            { newGame = LivePicture.create (GlossGame.png ".\\assets\\newGame.png") 500 125 (0 , 50)  
+getMenu :: Int -> GameState
+getMenu time = Menu 
+            { currentTime = time
+            , newGame = LivePicture.create (GlossGame.png ".\\assets\\newGame.png") 500 125 (0 , 50)  
             , quitGame = LivePicture.create (GlossGame.png ".\\assets\\quitGame.png") 500 125 (0 , -50) 
             }
 
-startCoordinates :: [Position]
-startCoordinates = [ (-160, 0), (-80, 0), (0,0), (80, 0)
-              , (160, 0), (240, 0), (-160, 130), (-80, 130)
-              , (0, 130), (80, 130), (160, 130), (240, 130)
-              , (-160, -130), (-80, -130) , (0, -130), (80, -130)
-              , (160, -130), (240, -130) 
-              ]
-
--- funkcija koja treba da uradi random startCoordinates samo sto ne znam kako da koristim tu f-ju
---randomizeCoordinates :: [Position] -> [Position]
---randomizeCoordinates startCoordinates = shuffle startCoordinates [13,4,14,1,6,2,5,8,7,3,4,1,2,3,3,17,9,10] 
-
---coordinates = randomizeCoordinates startCoordinates
-
-coordinates = startCoordinates
-
-getPlay :: GameState
-getPlay = Play
-            { forbidClick = False
+getPlay :: Int -> GameState
+getPlay time = Play
+            { currentTime = time
             , clickNumber = 0
             , duration = 200
             , timePassed = 0
@@ -88,7 +76,17 @@ getPlay = Play
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\test.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 16) 8
                       , Card.createCard (GlossGame.png ".\\assets\\cards\\3cpo3.png") (GlossGame.png ".\\assets\\cards\\cardBack.png") 75 125 (coordinates !! 17) 8   
                       ]
-            }            
+            }
+            where
+                startCoordinates :: [Position]
+                startCoordinates = [ (-160, 0), (-80, 0), (0,0), (80, 0)
+                                    , (160, 0), (240, 0), (-160, 130), (-80, 130)
+                                    , (0, 130), (80, 130), (160, 130), (240, 130)
+                                    , (-160, -130), (-80, -130) , (0, -130), (80, -130)
+                                    , (160, -130), (240, -130) 
+                                    ]
+                randomGenerator = mkStdGen time
+                coordinates = shuffle' startCoordinates (length startCoordinates) randomGenerator                                    
 
 getGameOver :: GameState
 getGameOver = GameOver
