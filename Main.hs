@@ -39,18 +39,19 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
 
 handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play _ clickNumber duration timePassed cards matchingCards) = gameState { clickNumber = clickNumber', cards = cards', matchingCards = matchingCards' }
     where
-        cards' = if not $ isClickDisabled $ matchingCards then map checkCardClick cards else cards
+        clickedCard = getClickedCard cards
 
-        clickNumber' = if not $ isClickDisabled $ matchingCards
+        cards' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard) then map checkCardClick cards else cards
+
+        clickNumber' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard)
                         then clickNumber + 1
                         else clickNumber
                       
-        matchingCards' = if not $ isClickDisabled $ matchingCards
+        matchingCards' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard)
                           then if clickNumber' `mod` 2 /=  0 
                                     then ( clickedCard ,  Nothing)
                                     else ( fst matchingCards , clickedCard)                                   
-                           else matchingCards
-                           where clickedCard = getClickedCard cards
+                           else matchingCards                           
 
       
         checkCardClick :: Card -> Card
@@ -70,7 +71,7 @@ handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSt
         isClickDisabled (Nothing, Nothing) = False
         isClickDisabled (Just card, Nothing) = False
         isClickDisabled (Nothing, Just card) = False
-        isClickDisabled (Just card1 , Just card2) = True                                                                                                                                           
+        isClickDisabled (Just card1 , Just card2) = True
 
                                                                                                                              
 handleKeyEvents _ gameState = gameState
@@ -124,7 +125,7 @@ updateGameState seconds gameState@(Play _ clickNumber duration timePassed cards 
         mismatchAnimationComplete :: Bool
         mismatchAnimationComplete = allAnimationsComplete == 4 
             where
-            allAnimationsComplete = foldl animationComplete 0 cards
+            allAnimationsComplete = foldl animationComplete 0 cards'
             
             animationComplete :: Int -> Card -> Int
             animationComplete acc card@(Card _ _ isFlipped isAnimating _ _ cardId) = if (cardId == fstCardId || cardId == sndCardId)  && not isFlipped &&  not isAnimating 
