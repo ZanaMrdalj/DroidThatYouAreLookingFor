@@ -54,13 +54,13 @@ handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSt
                            else matchingCards                           
 
       
-        checkCardClick :: Card -> Card
+        checkCardClick :: Card -> Card  --funkcija koja pokrece animaciju ako je karta kliknuta
         checkCardClick card@(Card front back isFlipped isAnimating _ _ _) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
                                                                         then
                                                                             Card.startFlipAnimation card
                                                                         else                               
                                                                             card
-        getClickedCard :: [Card] -> Maybe Card
+        getClickedCard :: [Card] -> Maybe Card  --funkcija koja izdvaja kliknutu kartu iz niza
         getClickedCard [] = Nothing
         getClickedCard (card@(Card front back isFlipped isAnimating _ _ _) : cards) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
                                                                         then
@@ -80,22 +80,23 @@ updateGameState :: Float -> GameState -> GameState
 updateGameState seconds gameState@(Intro currentTime duration timePassed introPicture) = gameState'
     where
         timePassed' = timePassed + seconds
-        gameState' = if timePassed' < duration
+        gameState' = if timePassed' < duration  --prikazujemo Intro stanje par sekundi i prelazimo u Meni stanje
                         then
                             gameState { timePassed = timePassed' }
                         else
                             GameState.getMenu currentTime
 
 updateGameState seconds gameState@(Menu _ _ _)  = gameState
+
 updateGameState seconds gameState@(Play _ clickNumber duration timePassed cards matchingCards) = gameState'
     where
         timePassed' = timePassed + seconds
-        gameState' = if allCardsFliped cards' 
-                        then GameState.getYouWin
+        gameState' = if allCardsFliped cards'   
+                        then GameState.getYouWin  --ako su sve karte okrenute (uparene), igra je zavrsena i prelazimo u stanje YouWin
                         else if timePassed' < duration 
                                 then 
                                     gameState { timePassed = timePassed', cards = cards', matchingCards = matchingCards' }
-                                else 
+                                else  -- vreme je isteklo, igra je zavrsena i prelazimo u stanje GameOver
                                     GameState.getGameOver      
 
 

@@ -13,11 +13,11 @@ import Graphics.Gloss
 data Card = Card 
     { front :: LivePicture
     , back :: LivePicture
-    , isFlipped :: Bool
+    , isFlipped :: Bool  --da li je karta okrenuta na lice
     , isAnimating :: Bool
     , animationDuration :: Float
     , animationTimePassed :: Float
-    , cardId :: Int
+    , cardId :: Int  --broj koji cemo koristiti za poredjenje karata
     } deriving (Show)  
 
 defaultAnimationDuration :: Float

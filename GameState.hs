@@ -13,22 +13,24 @@ import qualified Graphics.Gloss.Game as GlossGame
 import System.Random
 import System.Random.Shuffle
 
+
+-- tip podataka koji opisuje stanja u kojima igra moze da se nalazi
 data GameState = Intro
-    { currentTime :: Int -- current system time when the game was started
-    , duration :: Float  -- duration of Intro in seconds
-    , timePassed :: Float
+    { currentTime :: Int -- current system time since the game was started
+    , duration :: Float  -- trajanje Intro stanja u sekundama
+    , timePassed :: Float  -- vreme proteklo od prethodnog frejma
     , introPicture :: Picture } 
     | Menu 
-    { currentTime :: Int -- current system time when the game was started
+    { currentTime :: Int
     , newGame :: LivePicture 
     , quitGame :: LivePicture } 
     | Play
-    { currentTime :: Int -- current system time when the game was started 
-    ,clickNumber :: Int
-    , duration :: Float
+    { currentTime :: Int  
+    , clickNumber :: Int
+    , duration :: Float  -- vreme koje imamo na raspolaganju do zavrsetka igre
     , timePassed :: Float
     , cards :: [Card] 
-    , matchingCards :: (Maybe Card, Maybe Card)   
+    , matchingCards :: (Maybe Card, Maybe Card)   -- uredjeni par gde cuvamo podatke o kartama koje cemo porediti
     }
     | GameOver 
     {   duration :: Float
@@ -43,7 +45,7 @@ data GameState = Intro
         deriving Show
 
 
-getMenu :: Int -> GameState
+getMenu :: Int -> GameState 
 getMenu time = Menu 
             { currentTime = time
             , newGame = LivePicture.create (GlossGame.png ".\\assets\\newGame.png") 500 125 (0 , 50)  
@@ -86,7 +88,7 @@ getPlay time = Play
                                     , (160, -130), (240, -130) 
                                     ]
                 randomGenerator = mkStdGen time
-                coordinates = shuffle' startCoordinates (length startCoordinates) randomGenerator                                    
+                coordinates = shuffle' startCoordinates (length startCoordinates) randomGenerator  --randomiziranje niza sa koordinatama                                 
 
 getGameOver :: GameState
 getGameOver = GameOver
