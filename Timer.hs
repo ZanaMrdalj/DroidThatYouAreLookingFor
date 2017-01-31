@@ -11,11 +11,7 @@ getTimer currentTime = translate x y $ scale 0.2 0.2 $ color white $ text $ spli
 
 
 splitTimer :: Int -> String   --funkcija koja formatira vreme u obliku min:sec
-splitTimer currentTime
-    | minutes >= 3 = "3 : " ++ show seconds
-    | minutes >= 2 = "2 : " ++ show seconds
-    | minutes >= 1 = "1 : " ++ show seconds
-    | otherwise  = "0 : " ++ show seconds
-    where minutes = currentTime `div` 60
-          seconds = currentTime `mod` 60
+splitTimer currentTime = show minutes ++ " : " ++ show seconds
+      where minutes = currentTime `div` 60
+            seconds = currentTime `mod` 60
 
