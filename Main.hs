@@ -26,7 +26,7 @@ render (YouWin duration timePassed winningPicture) = winningPicture
 
 
 handleKeyEvents :: Event -> GameState -> GameState
-handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Menu currentTime newGamePicture quitGamePicture) = if LivePicture.isClicked newGamePicture mousePosition  
+handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition) gameState@(Menu currentTime newGamePicture quitGamePicture) = if LivePicture.isClicked newGamePicture mousePosition  
                                                                                                                             then
                                                                                                                                 GameState.getPlay currentTime
                                                                                                                             else
@@ -37,17 +37,19 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSta
                                                                                                                                         gameState
 
 
-handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameState@(Play _ clickNumber duration timePassed cards matchingCards) = gameState { clickNumber = clickNumber', cards = cards', matchingCards = matchingCards' }
+handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition) gameState@(Play _ clickNumber duration timePassed cards matchingCards) = gameState { clickNumber = clickNumber', cards = cards', matchingCards = matchingCards' }
     where
-        clickedCard = getClickedCard cards
+        clickedCard = getClickedCard cards --izdvajamo kliknutu kartu iz niza
 
-        cards' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard) then map checkCardClick cards else cards
+        cards' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard) 
+                     then map checkCardClick cards 
+                     else cards
 
         clickNumber' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard)
-                        then clickNumber + 1
-                        else clickNumber
-                      
-        matchingCards' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard)
+                          then clickNumber + 1
+                          else clickNumber
+                                    
+        matchingCards' = if (not $ isClickDisabled $ matchingCards) && (isJust clickedCard) 
                           then if clickNumber' `mod` 2 /=  0 
                                     then ( clickedCard ,  Nothing)
                                     else ( fst matchingCards , clickedCard)                                   
@@ -60,14 +62,15 @@ handleKeyEvents ( EventKey  (MouseButton LeftButton) Up _ mousePosition ) gameSt
                                                                             Card.startFlipAnimation card
                                                                         else                               
                                                                             card
-        getClickedCard :: [Card] -> Maybe Card  --funkcija koja izdvaja kliknutu kartu iz niza
+        getClickedCard :: [Card] -> Maybe Card  
         getClickedCard [] = Nothing
         getClickedCard (card@(Card front back isFlipped isAnimating _ _ _) : cards) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
                                                                         then
                                                                             Just card
                                                                         else
                                                                             getClickedCard cards       
-        isClickDisabled :: (Maybe Card, Maybe Card) -> Bool
+
+        isClickDisabled :: (Maybe Card, Maybe Card) -> Bool --ako imamo uredjeni par od dve karte zabranjujemo korisniku da klikne 
         isClickDisabled (Nothing, Nothing) = False
         isClickDisabled (Just card, Nothing) = False
         isClickDisabled (Nothing, Just card) = False
@@ -80,7 +83,7 @@ updateGameState :: Float -> GameState -> GameState
 updateGameState seconds gameState@(Intro currentTime duration timePassed introPicture) = gameState'
     where
         timePassed' = timePassed + seconds
-        gameState' = if timePassed' < duration  --prikazujemo Intro stanje par sekundi i prelazimo u Meni stanje
+        gameState' = if timePassed' < duration  
                         then
                             gameState { timePassed = timePassed' }
                         else
@@ -91,12 +94,12 @@ updateGameState seconds gameState@(Menu _ _ _)  = gameState
 updateGameState seconds gameState@(Play _ clickNumber duration timePassed cards matchingCards) = gameState'
     where
         timePassed' = timePassed + seconds
-        gameState' = if allCardsFliped cards'   
-                        then GameState.getYouWin  --ako su sve karte okrenute (uparene), igra je zavrsena i prelazimo u stanje YouWin
+        gameState' = if allCardsFliped cards'   --ako su sve karte okrenute (uparene), igra je zavrsena i prelazimo u stanje YouWin
+                        then GameState.getYouWin  
                         else if timePassed' < duration 
                                 then 
                                     gameState { timePassed = timePassed', cards = cards', matchingCards = matchingCards' }
-                                else  -- vreme je isteklo, igra je zavrsena i prelazimo u stanje GameOver
+                                else  -- vreme je isteklo, kraj igre
                                     GameState.getGameOver      
 
 
@@ -111,13 +114,13 @@ updateGameState seconds gameState@(Play _ clickNumber duration timePassed cards 
         allCardsFliped :: [Card] -> Bool             
         allCardsFliped cards = all Card.isFlipped cards'
 
-        isCardMismatch :: (Maybe Card, Maybe Card) -> Bool
+        isCardMismatch :: (Maybe Card, Maybe Card) -> Bool --vracamo true samo ako imamo dve karte i one se razlikuju
         isCardMismatch (Nothing, Nothing) = False
         isCardMismatch (Just card, Nothing) = False
         isCardMismatch (Nothing, Just card) = False
         isCardMismatch (Just card1 , Just card2) = if Card.cardId card1 /= Card.cardId card2 then True else False
 
-        isCardMatch :: (Maybe Card, Maybe Card) -> Bool
+        isCardMatch :: (Maybe Card, Maybe Card) -> Bool --vracamo true samo ako imamo dve karte i mozemo ih upariti
         isCardMatch (Nothing, Nothing) = False
         isCardMatch (Just card, Nothing) = False
         isCardMatch (Nothing, Just card) = False
@@ -137,26 +140,20 @@ updateGameState seconds gameState@(Play _ clickNumber duration timePassed cards 
                                                                                      sndCardId = Card.cardId ( fromJust (snd matchingCards))
         updateCards :: Card -> Card
         updateCards card@(Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) = if isAnimating
-                                                                                                            then
-                                                                                                                if animationTimePassed > animationDuration
-                                                                                                                    then
-                                                                                                                        Card.stopFlipAnimation card
-                                                                                                                    else
-                                                                                                                        Card.updateFlipAnimation seconds card
-                                                                                                            else
-                                                                                                                if isCardMismatch matchingCards
-                                                                                                                then 
-                                                                                                                    let fstCardId = Card.cardId ( fromJust (fst matchingCards))
-                                                                                                                        sndCardId = Card.cardId ( fromJust (snd matchingCards))
-                                                                                                                    in if (cardId == fstCardId || cardId == sndCardId) && isFlipped
-                                                                                                                        then
-                                                                                                                         Card.startFlipAnimation card
-                                                                                                                        else
-                                                                                                                         card 
-                                                                                                                else
-                                                                                                                    card
-                                                                                                                                                                                                                        
-                                                                                                                                                                                                                            
+                                                                                                                  then
+                                                                                                                     if animationTimePassed > animationDuration
+                                                                                                                        then Card.stopFlipAnimation card
+                                                                                                                        else Card.updateFlipAnimation seconds card
+                                                                                                                  else
+                                                                                                                     if isCardMismatch matchingCards   --ako smo kliknuli na dve karte koje su razlicite
+                                                                                                                       then                                                      
+                                                                                                                          let fstCardId = Card.cardId ( fromJust (fst matchingCards))
+                                                                                                                              sndCardId = Card.cardId ( fromJust (snd matchingCards))
+                                                                                                                          in if (cardId == fstCardId || cardId == sndCardId) && isFlipped
+                                                                                                                                then  Card.startFlipAnimation card
+                                                                                                                                else  card 
+                                                                                                                       else  card                                                                                                                                      
+
 
 updateGameState seconds gameState@(YouWin duration timePassed introPicture) = gameState'
     where
@@ -165,7 +162,7 @@ updateGameState seconds gameState@(YouWin duration timePassed introPicture) = ga
                         then
                             gameState { timePassed = timePassed' }
                         else
-                            error "Thank you for playing"
+                            error "End of the game"
 
 
 updateGameState seconds gameState@(GameOver duration timePassed exitPicture) = gameState'

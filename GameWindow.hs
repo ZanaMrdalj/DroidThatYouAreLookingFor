@@ -8,7 +8,7 @@ module GameWindow (
 
 import Graphics.Gloss
 
-windowResolution :: (Int, Int) -- width and height of the window
+windowResolution :: (Int, Int) -- sirina i visina prozora
 windowResolution = (1280, 720)
 
 windowPosition :: (Int, Int)
