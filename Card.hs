@@ -21,7 +21,7 @@ data Card = Card
     , cardId :: Int  -- | card id used for differentiating between cards.
     } deriving (Show)  
 
--- | Default duratio of the filp animation.
+-- | Default duration of the flip animation.
 defaultAnimationDuration :: Float
 defaultAnimationDuration = 0.8
 
@@ -52,7 +52,7 @@ getPicture card@(Card front back isFlipped isAnimating animationDuration animati
                                                                                                         else
                                                                                                             flipPicture card
 -- | scales the image based on given scale factors in the coordinate system orgin and returns a scaled version of renderable picture.
--- | used for filp animation                                                                                                             
+-- | used for flip animation                                                                                                             
 scaleAroundOrigin :: Position -> Float -> Float -> Picture -> Picture
 scaleAroundOrigin (x, y) scaleFactorX scaleFactorY picture =  (translate x y . scale scaleFactorX scaleFactorY . translate  (-x) (-y)) $ picture 
 
@@ -80,7 +80,7 @@ startFlipAnimation card@(Card front back isFlipped _ _ _ _) = card { isFlipped =
     where
         isFlipped' = not isFlipped
 
--- | Used for updating current filp animation state.
+-- | Used for updating current flip animation state.
 updateFlipAnimation :: Float -> Card -> Card
 updateFlipAnimation seconds card = card { animationTimePassed = animationTimePassed' }
     where
