@@ -191,5 +191,5 @@ main = do
         currentTime = time 
         , duration = 2 
         , timePassed = 0
-        , introPicture = GlossGame.jpg ".\\assets\\intro.jpg" } in 
+        , introPicture = GlossGame.jpg ".\\assets\\intro2.jpg" } in 
         play GameWindow.window GameWindow.backgroundColor GameWindow.fps initialGameState render handleKeyEvents updateGameState

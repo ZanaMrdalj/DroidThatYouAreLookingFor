@@ -109,6 +109,6 @@ getYouWin :: GameState
 getYouWin = YouWin
             { duration = 3
             , timePassed = 0
-            , congrats = GlossGame.png ".\\assets\\youwin.png"
+            , congrats = GlossGame.png ".\\assets\\youwin2.png"
             }
                    
