@@ -10,19 +10,22 @@ module Card (
 import LivePicture
 import Graphics.Gloss
 
+-- | Data which represents one Card that is clickable and can be rendered on the screen.
 data Card = Card 
-    { front :: LivePicture
-    , back :: LivePicture
-    , isFlipped :: Bool  --da li je karta okrenuta na lice
-    , isAnimating :: Bool
-    , animationDuration :: Float
-    , animationTimePassed :: Float
-    , cardId :: Int  --broj koji cemo koristiti za poredjenje karata
+    { front :: LivePicture -- | front face of the card
+    , back :: LivePicture -- | back face of the card
+    , isFlipped :: Bool  -- | flag which indicates whether the cards is flipped face up.
+    , isAnimating :: Bool -- | flag that indicats if the card is currently animating (flipping from face to another)
+    , animationDuration :: Float -- | duration of the flip animation
+    , animationTimePassed :: Float -- | flip animation time passed
+    , cardId :: Int  -- | card id used for differentiating between cards.
     } deriving (Show)  
 
+-- | Default duratio of the filp animation.
 defaultAnimationDuration :: Float
 defaultAnimationDuration = 0.8
 
+-- | creates and returns a card based on given arguments.
 createCard :: Picture -> Picture -> Int -> Int -> Position -> Int -> Card          
 createCard frontPicture backPicture width height (x, y) matchNumber = Card 
                                                             { front = LivePicture.create frontPicture width height (x ,y)
@@ -33,7 +36,7 @@ createCard frontPicture backPicture width height (x, y) matchNumber = Card
                                                             , animationTimePassed = 0
                                                             , cardId = matchNumber   
                                                             } 
-
+-- | gets a renderable Gloss picture of a given card.
 getPicture :: Card -> Picture
 getPicture card@(Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) = if not isFlipped 
                                                                                                 then 
@@ -48,9 +51,12 @@ getPicture card@(Card front back isFlipped isAnimating animationDuration animati
                                                                                                             picture front
                                                                                                         else
                                                                                                             flipPicture card
+-- | scales the image based on given scale factors in the coordinate system orgin and returns a scaled version of renderable picture.
+-- | used for filp animation                                                                                                             
 scaleAroundOrigin :: Position -> Float -> Float -> Picture -> Picture
 scaleAroundOrigin (x, y) scaleFactorX scaleFactorY picture =  (translate x y . scale scaleFactorX scaleFactorY . translate  (-x) (-y)) $ picture 
 
+-- | Excutes flip animation (from back to front) based on the current Card state and its animation state.
 flipPicture :: Card -> Picture
 flipPicture (Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) 
     | animationTimePassed < treshold = let scaleX = (treshold - animationTimePassed) / treshold in scaleAroundOrigin (position back) scaleX 1 (picture back)
@@ -59,6 +65,7 @@ flipPicture (Card front back isFlipped isAnimating animationDuration animationTi
     where 
         treshold = animationDuration / 2
 
+-- | Excutes flip animation (from front to back) based on the current Card state and its animation state.
 reverseFlipPicture :: Card -> Picture
 reverseFlipPicture (Card front back isFlipped isAnimating animationDuration animationTimePassed cardId) 
     | animationTimePassed < treshold = let scaleX = (treshold - animationTimePassed) / treshold in scaleAroundOrigin (position front) scaleX 1  (picture front)
@@ -67,16 +74,18 @@ reverseFlipPicture (Card front back isFlipped isAnimating animationDuration anim
     where treshold = animationDuration / 2
                                                                                         
 
-
+-- | Used fo starting the flip animation.
 startFlipAnimation :: Card -> Card
 startFlipAnimation card@(Card front back isFlipped _ _ _ _) = card { isFlipped = isFlipped', isAnimating = True}
     where
         isFlipped' = not isFlipped
 
+-- | Used for updating current filp animation state.
 updateFlipAnimation :: Float -> Card -> Card
 updateFlipAnimation seconds card = card { animationTimePassed = animationTimePassed' }
     where
         animationTimePassed' = animationTimePassed card + seconds 
 
+-- | Used for stoping flip animation.
 stopFlipAnimation :: Card -> Card
 stopFlipAnimation card = card { isAnimating = False, animationTimePassed = 0 }

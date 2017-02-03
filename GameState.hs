@@ -14,37 +14,39 @@ import System.Random
 import System.Random.Shuffle
 
 
--- tip podataka koji opisuje stanja u kojima igra moze da se nalazi
-data GameState = Intro
-    { currentTime :: Int -- current system time since the game was started
-    , duration :: Float  -- trajanje Intro stanja u sekundama
-    , timePassed :: Float  -- vreme proteklo od prethodnog frejma
-    , introPicture :: Picture } 
-    | Menu 
-    { currentTime :: Int
-    , newGame :: LivePicture 
-    , quitGame :: LivePicture } 
-    | Play
-    { currentTime :: Int  
-    , clickNumber :: Int
-    , duration :: Float  -- vreme koje imamo na raspolaganju do zavrsetka igre
-    , timePassed :: Float
-    , cards :: [Card] 
-    , matchingCards :: (Maybe Card, Maybe Card)   -- uredjeni par gde cuvamo podatke o kartama koje cemo porediti
+-- | 'GameState' represents possible states of the game.
+data GameState = Intro -- | 'Intro' game state, loads at the game start and lasts for a predefined time.
+    { currentTime :: Int -- | Current system time.
+    , duration :: Float  -- | Duration of the Intro state.
+    , timePassed :: Float  -- | Total time passed since the begining of the state.
+    , introPicture :: Picture  -- | Intro image that is rendered on the screen.
+    } 
+    | Menu -- | 'Menu' game state. Loads automaticaly after the intro. Gives the player options to start a new game or quit the game.
+    { currentTime :: Int -- | Current system time.
+    , newGame :: LivePicture -- | clickable LivePicture, initiates play state.
+    , quitGame :: LivePicture  -- | clickable LivePicture, exits the game.
+    } 
+    | Play -- | 'Play' game state. Represents the state in which the user can play the memory game.
+    { currentTime :: Int -- | Current system time.
+    , clickNumber :: Int -- | Used for tracking of the clicked cards.
+    , duration :: Float  -- | Time available to the player to finish the game. On exparation, player looses the game.
+    , timePassed :: Float -- | Time passed in the play state. Used for timer calculations.
+    , cards :: [Card] -- | List of cards availavle to the player.
+    , matchingCards :: (Maybe Card, Maybe Card)   -- | Used for comparison of the cards flipped by the player.
     }
-    | GameOver 
-    {   duration :: Float
-    ,   timePassed :: Float
-    ,   endGame :: Picture  
+    | GameOver -- | 'Game Over' game state. Executed in case of the time exparation in play state.
+    {   duration :: Float -- | Duration of the 'Game Over' game state.
+    ,   timePassed :: Float -- | Time passed in the 'Game Over' state.
+    ,   endGame :: Picture  -- | Image rendered in the Game Over state.
     }
-    | YouWin
-    {   duration :: Float
-    ,   timePassed :: Float  
-    ,   congrats :: Picture
+    | YouWin -- | 'Win' game state. Executed when the player succesfully matches all the cards.
+    {   duration :: Float  -- | Duration of the 'Win' game state.
+    ,   timePassed :: Float  -- | Time passed in the YouWin state.
+    ,   congrats :: Picture -- | Image rendered in the You Win state.
     }    
         deriving Show
 
-
+-- |  Function creates and returns the menu state. System time is passed as a parameter.
 getMenu :: Int -> GameState 
 getMenu time = Menu 
             { currentTime = time
@@ -52,6 +54,8 @@ getMenu time = Menu
             , quitGame = LivePicture.create (GlossGame.png ".\\assets\\quitGame.png") 500 125 (0 , -50) 
             }
 
+-- | Funstion creates and returns the Play state. 
+-- System time is passed as a paramter which is used for a random number generator and random distribution of cards.
 getPlay :: Int -> GameState
 getPlay time = Play
             { currentTime = time
@@ -87,9 +91,12 @@ getPlay time = Play
                                     , (-160, -130), (-80, -130) , (0, -130), (80, -130)
                                     , (160, -130), (240, -130) 
                                     ]
+                -- | create a random generator based on the system time.                                    
                 randomGenerator = mkStdGen time
-                coordinates = shuffle' startCoordinates (length startCoordinates) randomGenerator  --randomiziranje niza sa koordinatama                                 
+                -- | randomize coordinates with the given random generator.
+                coordinates = shuffle' startCoordinates (length startCoordinates) randomGenerator                         
 
+-- | Funstion creates and returns the GameOber state.
 getGameOver :: GameState
 getGameOver = GameOver
                     { duration = 3
@@ -97,6 +104,7 @@ getGameOver = GameOver
                     , endGame = GlossGame.png ".\\assets\\gameover.png"
                     }
 
+-- | Funstion creates and returns the YouWin state.
 getYouWin :: GameState
 getYouWin = YouWin
             { duration = 3
