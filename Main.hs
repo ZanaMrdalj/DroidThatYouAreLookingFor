@@ -58,7 +58,7 @@ handleKeyEvents (EventKey  (MouseButton LeftButton) Up _ mousePosition) gameStat
                           else matchingCards                           
 
       
-        -- | Function checks whe a card is clicked and starts its animation if it is.
+        -- | Function checks if a card is clicked and starts its animation if it is.
         checkCardClick :: Card -> Card  
         checkCardClick card@(Card front back isFlipped isAnimating _ _ _) = if not isFlipped && not isAnimating && LivePicture.isClicked back mousePosition
                                                                                then
@@ -102,7 +102,7 @@ updateGameState seconds gameState@(Play _ clickNumber duration timePassed cards 
                         else if timePassed' < duration 
                                 then 
                                     gameState { timePassed = timePassed', cards = cards', matchingCards = matchingCards' }
-                                else  -- | Game time has passed (duration) we pass into game over state.
+                                else  -- | Game time has run out (duration). we pass into game over state.
                                     GameState.getGameOver      
 
 
